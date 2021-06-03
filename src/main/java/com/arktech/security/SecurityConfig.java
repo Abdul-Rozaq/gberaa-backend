@@ -32,7 +32,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.addFilter(new JwtUsernameAndPasswordAuthenticationFilter(authenticationManager()))
 			.addFilterAfter(new JwtTokenVerifier(), JwtUsernameAndPasswordAuthenticationFilter.class)
 			.authorizeRequests()
-				.antMatchers("/api/auth/**").permitAll()
+				.antMatchers("/api/auth/**", "/api/v1/users/**").permitAll()
 			.anyRequest()
 			.authenticated();
 	}
