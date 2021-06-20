@@ -18,6 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.arktech.dto.LoginRequest;
 import com.arktech.exception.AppException;
+import com.arktech.util.Config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.jsonwebtoken.Jwts;
@@ -28,6 +29,7 @@ import lombok.AllArgsConstructor;
 public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 	
 	private AuthenticationManager authenticationManager;
+	private Config config;
 	
 	@Override
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
@@ -49,13 +51,12 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 	@Override
 	protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
 			Authentication authResult) throws IOException, ServletException {
-		String key = "SecuredKeySecuredKeySecuredKeySecuredKeySecuredKeySecuredKeySecuredKeySecuredKeySecuredKey";
 		String token = Jwts.builder()
 							.setSubject(authResult.getName())
 							.claim("authorities", authResult.getAuthorities())
 							.setIssuedAt(new Date())
 							.setExpiration(java.sql.Date.valueOf(LocalDate.now().plusWeeks(2)))
-							.signWith(Keys.hmacShaKeyFor(key.getBytes()))
+							.signWith(Keys.hmacShaKeyFor(config.getKey().getBytes()))
 							.compact();
 		
 		SecurityContextHolder.getContext().setAuthentication(authResult);

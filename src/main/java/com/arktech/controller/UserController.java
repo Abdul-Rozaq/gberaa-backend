@@ -1,7 +1,5 @@
 package com.arktech.controller;
 
-import java.util.List;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.arktech.dto.ApiResponse;
 import com.arktech.dto.UserDto;
 import com.arktech.entity.User;
 import com.arktech.mapper.UserMapper;
@@ -34,14 +33,14 @@ public class UserController {
 	}
 	
 	@GetMapping
-	public ResponseEntity<List<UserDto>> getAllUsers() {
-		List<UserDto> users = userService.getAllUsers();
+	public ResponseEntity<ApiResponse> getAllUsers() {
+		var users = userService.getAllUsers();
 		return new ResponseEntity<>(users, HttpStatus.OK);
 	}
 	
 	@GetMapping("/riders")
-	public ResponseEntity<List<UserDto>> getAllRiders() {
-		List<UserDto> riders = userService.getAllRiders();
+	public ResponseEntity<ApiResponse> getAllRiders() {
+		var riders = userService.getAllRiders();
 		return new ResponseEntity<>(riders, HttpStatus.OK);
 	}
 	

@@ -3,8 +3,7 @@ package com.arktech.service;
 import org.springframework.stereotype.Service;
 
 import com.arktech.Repository.DeliveryDetailRepository;
-import com.arktech.Repository.DeliveryRepository;
-import com.arktech.entity.Delivery;
+import com.arktech.dto.ApiResponse;
 import com.arktech.entity.DeliveryDetail;
 import com.arktech.exception.AppException;
 
@@ -15,17 +14,22 @@ import lombok.AllArgsConstructor;
 public class DeliveryDetailService {
 	
 	private DeliveryDetailRepository deliveryDetailRepository;
-	private DeliveryRepository deliveryRepository;
 
-	public DeliveryDetail getDetails(Long deliveryId) {
-		Delivery delivery = deliveryRepository
-				.findById(deliveryId)
-				.orElseThrow(() -> new AppException("Delivery not found with ID: " + deliveryId));
-		
-		return deliveryDetailRepository
-							.findByDelivery(delivery)
-							.orElseThrow(() -> new AppException("Delivery not found with ID: " + deliveryId));
-
+	public ApiResponse getDetails(Long deliveryId) {
+		try {
+			var details = deliveryDetailRepository
+					.findByDelivery_id(deliveryId)
+					.orElseThrow(() -> new AppException("Delivery not found with ID: " + deliveryId));
+			
+			return new ApiResponse("Successful", null, details);
+			
+		} catch (Exception e) {
+			return new ApiResponse("Error", e.getLocalizedMessage(), null);
+		}
+	}
+	
+	public void save(DeliveryDetail detail) {
+		deliveryDetailRepository.save(detail);
 	}
 
 }

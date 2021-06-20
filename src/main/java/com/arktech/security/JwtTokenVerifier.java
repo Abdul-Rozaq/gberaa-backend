@@ -18,6 +18,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.arktech.exception.AppException;
+import com.arktech.util.Config;
 import com.google.common.base.Strings;
 
 import io.jsonwebtoken.Claims;
@@ -25,8 +26,12 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import lombok.AllArgsConstructor;
 
+@AllArgsConstructor
 public class JwtTokenVerifier extends OncePerRequestFilter {
+	
+	private Config config;
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -42,10 +47,8 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
 		String token = authHeader.replace("Bearer ", "");
 		
 		try {
-			String key = "SecuredKeySecuredKeySecuredKeySecuredKeySecuredKeySecuredKeySecuredKeySecuredKeySecuredKey";
-			
 			Jws<Claims> claimsJws = Jwts.parserBuilder()
-										.setSigningKey(Keys.hmacShaKeyFor(key.getBytes()))
+										.setSigningKey(Keys.hmacShaKeyFor(config.getKey().getBytes()))
 										.build()
 										.parseClaimsJws(token);
 			

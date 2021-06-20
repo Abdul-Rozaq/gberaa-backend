@@ -9,10 +9,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.arktech.Repository.VerificationTokenRepository;
+import com.arktech.Repository.WalletRepository;
+import com.arktech.dto.ApiResponse;
 import com.arktech.dto.RegistrationRequest;
 import com.arktech.entity.NotificationEmail;
 import com.arktech.entity.User;
 import com.arktech.entity.VerificationToken;
+import com.arktech.entity.Wallet;
 import com.arktech.exception.AppException;
 import com.arktech.util.AppUserRole;
 
@@ -29,8 +32,9 @@ public class AuthService {
 	private MailService mailService;
 	private UserService userService;
 	private VerificationTokenRepository tokenRepository;
+	private WalletRepository walletRepository;
 
-	public String register(RegistrationRequest request) {
+	public ApiResponse register(RegistrationRequest request) {
 		User user = new User();
 		user.setFirstName(request.getFirstName());
 		user.setLastName(request.getLastName());
@@ -41,31 +45,43 @@ public class AuthService {
 		user.setAddress(request.getAddress());
 		user.setCreatedDate(Instant.now());
 		
-		if (request.getRole() == null) {
+		if (request.getRole() == null) 
 			user.setRole(AppUserRole.USER);
-		} else {
+		else 
 			user.setRole(request.getRole());			
+		
+		
+		try {
+			User _user = userService.save(user);
+			String token = generateVerificationToken(_user);
+			sendVerificationEmail(_user, token);
+			walletRepository.save(new Wallet(null, user, 0.0));
+			
+			return new ApiResponse("Successful", "Registration complete! Please check your mail for verification.", null);
+			
+		} catch (Exception e) {
+			return new ApiResponse("Error", e.getMessage(), null);
 		}
-		
-		User _user = userService.save(user);
-		String token = generateVerificationToken(_user);
-		sendVerificationEmail(_user, token);
-		
-		return "Registration complete! Please check your mail for verification.";
 	}
 
-	public String verifyAccount(String token) {
-		VerificationToken _token = tokenRepository.findByToken(token).orElseThrow(() -> new AppException("Token not found"));
-		
-		if (_token.getConfirmedAt() != null) 
-			throw new AppException("Email already verified");
-		
-		LocalDateTime expiryDate = _token.getExpiryDate();
-		if (expiryDate.isBefore(LocalDateTime.now())) 
-			throw new AppException("Token already expired, please request a new one");
-		
-		fetchAndEnableUser(_token);
-		return "Account verification Successful";
+	public ApiResponse verifyAccount(String token) {
+		try {
+			VerificationToken _token = tokenRepository.findByToken(token).orElseThrow(() -> new AppException("Token not found"));
+			
+			if (_token.getConfirmedAt() != null) 
+				throw new AppException("Email has already been verified");
+			
+			LocalDateTime expiryDate = _token.getExpiryDate();
+			if (expiryDate.isBefore(LocalDateTime.now())) 
+				throw new AppException("Token already expired, please request a new one");
+			
+			fetchAndEnableUser(_token);
+			
+			return new ApiResponse( "Successful", "Account verification Successful", null);
+			
+		} catch (Exception e) {
+			return new ApiResponse("Error", e.getMessage(), null);
+		}
 	}
 	
 	public User getCurrentUser() {
@@ -75,19 +91,27 @@ public class AuthService {
 	
 	// HELPER METHODS
 	
-	private void fetchAndEnableUser(VerificationToken token) {
-		String email = token.getUser().getEmail();
-		userService.findUserByEmail(email);
-		
-		token.setConfirmedAt(LocalDateTime.now());
-		userService.enableAppUser(email);
-		tokenRepository.save(token);
+	private void fetchAndEnableUser(VerificationToken token) {		
+		try {
+			String email = token.getUser().getEmail();
+			userService.findUserByEmail(email);
+			userService.enableAppUser(email);
+			
+			token.setConfirmedAt(LocalDateTime.now());			
+			tokenRepository.save(token);			
+		} catch (Exception e) {
+			throw new AppException(e.getMessage());
+		}
 	}
 
-	private String generateVerificationToken(User user) {
+	private String generateVerificationToken(User user) {		
 		String token = UUID.randomUUID().toString();
-		VerificationToken _token = new VerificationToken(null, token, user, LocalDateTime.now().plusDays(14), null);
-		tokenRepository.save(_token);
+		try {
+			VerificationToken _token = new VerificationToken(null, token, user, LocalDateTime.now().plusDays(14), null);			
+			tokenRepository.save(_token);
+		} catch (Exception e) {
+			throw new AppException(e.getMessage());
+		}
 		
 		return token;
 	}

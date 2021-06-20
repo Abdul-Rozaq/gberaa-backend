@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class AppExceptionHandler {
 
-    @ExceptionHandler(value = {AppException.class, IllegalArgumentException.class, IllegalStateException.class})
+    @ExceptionHandler(value = {AppException.class})
     public ResponseEntity<Object> handleException(AppException e){
         ErrorResponseClass error = new ErrorResponseClass();
         error.setStatus(HttpStatus.NOT_FOUND.value());

@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.arktech.entity.DeliveryDetail;
+import com.arktech.dto.ApiResponse;
 import com.arktech.service.DeliveryDetailService;
 
 import lombok.AllArgsConstructor;
@@ -20,8 +20,8 @@ public class DeliveryDetailController {
 	private DeliveryDetailService deliveryDetailService;
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<DeliveryDetail> getDeliveryDetail(@PathVariable("id") Long deliveryId) {
-		DeliveryDetail deliveryDetail = deliveryDetailService.getDetails(deliveryId);
-		return new ResponseEntity<>(deliveryDetail, HttpStatus.OK);
+	public ResponseEntity<ApiResponse> getDeliveryDetail(@PathVariable("id") Long deliveryId) {
+		var response = deliveryDetailService.getDetails(deliveryId);
+		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 }
