@@ -26,13 +26,13 @@ public class AuthController {
 	
 	@PostMapping("/signup")
 	public ResponseEntity<ApiResponse> register(@Valid @RequestBody RegistrationRequest request) {
-		var authResponse = authService.register(request);
+		ApiResponse authResponse = authService.register(request);
 		return new ResponseEntity<>(authResponse, HttpStatus.OK);
 	}
 	
 	@GetMapping("/account/verification/{token}")
 	public ResponseEntity<ApiResponse> verifyAccount(@PathVariable("token") String token) {
-		var response = authService.verifyAccount(token);
+		ApiResponse response = authService.verifyAccount(token);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 }

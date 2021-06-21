@@ -21,7 +21,7 @@ public class DeliveryDetailController {
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<ApiResponse> getDeliveryDetail(@PathVariable("id") Long deliveryId) {
-		var response = deliveryDetailService.getDetails(deliveryId);
+		ApiResponse response = deliveryDetailService.getDetails(deliveryId);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 }

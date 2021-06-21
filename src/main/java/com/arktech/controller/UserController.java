@@ -34,13 +34,13 @@ public class UserController {
 	
 	@GetMapping
 	public ResponseEntity<ApiResponse> getAllUsers() {
-		var users = userService.getAllUsers();
+		ApiResponse users = userService.getAllUsers();
 		return new ResponseEntity<>(users, HttpStatus.OK);
 	}
 	
 	@GetMapping("/riders")
 	public ResponseEntity<ApiResponse> getAllRiders() {
-		var riders = userService.getAllRiders();
+		ApiResponse riders = userService.getAllRiders();
 		return new ResponseEntity<>(riders, HttpStatus.OK);
 	}
 	

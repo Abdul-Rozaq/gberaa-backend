@@ -1,5 +1,6 @@
 package com.arktech.service;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.arktech.Repository.UserRepository;
 import com.arktech.dto.ApiResponse;
+import com.arktech.dto.UserDto;
 import com.arktech.entity.User;
 import com.arktech.exception.AppException;
 import com.arktech.mapper.UserMapper;
@@ -49,7 +51,7 @@ public class UserService {
 
 	public ApiResponse getAllUsers() {
 		try {
-			var users = userRepository.findByRole(AppUserRole.USER)
+			List<UserDto> users = userRepository.findByRole(AppUserRole.USER)
 									.stream()
 									.map(userMapper::mapToDto)
 									.collect(Collectors.toList());
@@ -62,7 +64,7 @@ public class UserService {
 	
 	public ApiResponse getAllRiders() {
 		try {
-			var riders = userRepository.findByRole(AppUserRole.RIDER)
+			List<UserDto> riders = userRepository.findByRole(AppUserRole.RIDER)
 										.stream()
 										.map(userMapper::mapRiderToDto)
 										.collect(Collectors.toList());

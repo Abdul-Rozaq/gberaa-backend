@@ -1,5 +1,6 @@
 package com.arktech.service;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -11,6 +12,7 @@ import com.arktech.Repository.TransactionRepository;
 import com.arktech.Repository.WalletRepository;
 import com.arktech.dto.ApiResponse;
 import com.arktech.dto.FundWalletRequest;
+import com.arktech.dto.TransactionResponse;
 import com.arktech.entity.Delivery;
 import com.arktech.entity.Transaction;
 import com.arktech.entity.User;
@@ -35,7 +37,7 @@ public class TransactionService {
 	
 	public ApiResponse getAllTransactions() {
 		try {
-			var transaction = transactionRepository
+			List<TransactionResponse> transaction = transactionRepository
 												.findAll()
 												.stream()
 												.map(transactionMapper::mapToResponse)
@@ -52,7 +54,7 @@ public class TransactionService {
 		try {
 			User user = authService.getCurrentUser();
 			
-			var transactions = transactionRepository
+			List<TransactionResponse> transactions = transactionRepository
 												.findByUser(user)
 												.stream()
 												.map(transactionMapper::mapToResponse)

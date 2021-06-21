@@ -26,7 +26,7 @@ public class WalletService {
 					.findByUser(user)
 					.orElseThrow(() -> new AppException("User does not have a wallet"));
 			
-			var walletDto = new WalletDto(wallet.getUser().getEmail(), wallet.getBalance());
+			WalletDto walletDto = new WalletDto(wallet.getUser().getEmail(), wallet.getBalance());
 			
 			return new ApiResponse("Successful", null, walletDto);
 			

@@ -1,6 +1,7 @@
 package com.arktech.service;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.arktech.Repository.DeliveryRepository;
 import com.arktech.dto.ApiResponse;
 import com.arktech.dto.DeliveryDetailDto;
+import com.arktech.dto.DeliveryResponse;
 import com.arktech.entity.Delivery;
 import com.arktech.entity.User;
 import com.arktech.exception.AppException;
@@ -33,7 +35,7 @@ public class DeliveryService {
 
 	public ApiResponse getAllDeliveries() {
 		try {
-			var deliveries = deliveryRepository.findAll()
+			List<DeliveryResponse> deliveries = deliveryRepository.findAll()
 												.stream()
 												.map(deliveryMapper::mapToResponse)
 												.collect(Collectors.toList());
@@ -51,8 +53,8 @@ public class DeliveryService {
 			if (request.getDeliveryDate() == null) 
 				request.setDeliveryDate(LocalDate.now());
 
-//			Delivery delivery = deliveryRepository.save(deliveryMapper.mapToEntity(user, request.getDeliveryType()));
-//			deliveryDetailService.save(deliveryDetailMapper.mapToEntity(request, delivery));
+			Delivery delivery = deliveryRepository.save(deliveryMapper.mapToEntity(user, request.getDeliveryType()));
+			deliveryDetailService.save(deliveryDetailMapper.mapToEntity(request, delivery));
 			
 			return new ApiResponse(SUCCESSFUL, "Delivery successfully created", null);
 		} catch (Exception e) {
@@ -74,7 +76,7 @@ public class DeliveryService {
 		try {
 			User rider = authService.getCurrentUser();
 			
-			var deliveries = deliveryRepository
+			List<DeliveryResponse> deliveries = deliveryRepository
 								.findByRiderAndStatus(rider, status)
 								.stream()
 								.map(deliveryMapper::mapToResponse)
@@ -91,7 +93,7 @@ public class DeliveryService {
 		try {
 			User user = authService.getCurrentUser();
 			
-			var deliveries = deliveryRepository
+			List<DeliveryResponse> deliveries = deliveryRepository
 								.findByUserAndStatus(user, status)
 								.stream()
 								.map(deliveryMapper::mapToResponse)
@@ -108,7 +110,7 @@ public class DeliveryService {
 		try {
 			User user = authService.getCurrentUser();
 			
-			var deliveries = deliveryRepository.findByUser(user)
+			List<DeliveryResponse> deliveries = deliveryRepository.findByUser(user)
 												.stream()
 												.map(deliveryMapper::mapToResponse)
 												.collect(Collectors.toList());
@@ -124,7 +126,7 @@ public class DeliveryService {
 		try {
 			User user = authService.getCurrentUser();
 			
-			var deliveries = deliveryRepository.findByRider(user)
+			List<DeliveryResponse> deliveries = deliveryRepository.findByRider(user)
 												.stream()
 												.map(deliveryMapper::mapToResponse)
 												.collect(Collectors.toList());

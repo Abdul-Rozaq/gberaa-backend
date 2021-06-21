@@ -28,13 +28,13 @@ public class DeliveryController {
 	@PostMapping
 	public ResponseEntity<ApiResponse> createDelivery(@RequestBody DeliveryDetailDto request) {
 		System.out.println("Processing request");
-		var response = deliveryService.createDelivery(request);
+		ApiResponse response = deliveryService.createDelivery(request);
 		return new ResponseEntity<>(response, HttpStatus.CREATED);
 	}
 	
 	@GetMapping
 	public ResponseEntity<ApiResponse> getAllDeliveries() {
-		var deliveries = deliveryService.getAllDeliveries();
+		ApiResponse deliveries = deliveryService.getAllDeliveries();
 		return new ResponseEntity<>(deliveries, HttpStatus.OK); 
 	}
 	
@@ -46,43 +46,43 @@ public class DeliveryController {
 	
 	@GetMapping("/for-user")
 	public ResponseEntity<ApiResponse> getDeliveriesForUser() {
-		var deliveries = deliveryService.getAllDeliveriesForUser();
+		ApiResponse deliveries = deliveryService.getAllDeliveriesForUser();
 		return new ResponseEntity<>(deliveries, HttpStatus.OK);
 	}
 	
 	@GetMapping("/for-user/status")
 	public ResponseEntity<ApiResponse> getDeliveriesForUserByStatus(@RequestParam DeliveryStatus status) {
-		var deliveries = deliveryService.getDeliveryByStatusForUser(status);
+		ApiResponse deliveries = deliveryService.getDeliveryByStatusForUser(status);
 		return new ResponseEntity<>(deliveries, HttpStatus.OK);
 	}
 	
 	@GetMapping("/for-rider")
 	public ResponseEntity<ApiResponse> getDeliveriesForRider() {
-		var deliveries = deliveryService.getAllDeliveriesForRider();
+		ApiResponse deliveries = deliveryService.getAllDeliveriesForRider();
 		return new ResponseEntity<>(deliveries, HttpStatus.OK);
 	}
 	
 	@GetMapping("/for-rider/status")
 	public ResponseEntity<ApiResponse> getDeliveriesForRiderByStatus(@RequestParam DeliveryStatus status) {
-		var deliveries = deliveryService.getDeliveryByStatusForRider(status);
+		ApiResponse deliveries = deliveryService.getDeliveryByStatusForRider(status);
 		return new ResponseEntity<>(deliveries, HttpStatus.OK);
 	}
 	
 	@PutMapping("/{id}/status")
 	public ResponseEntity<ApiResponse> updateDeliveryStatus(@PathVariable("id") Long deliveryId) {
-		var response = deliveryService.updateStatus(deliveryId);
+		ApiResponse response = deliveryService.updateStatus(deliveryId);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 	
 	@PutMapping("/{id}/review")
 	public ResponseEntity<ApiResponse> addDeliveryPrice(@RequestParam Double price, @PathVariable("id") Long deliveryId) {
-		var response = deliveryService.addDeliveryPrice(price, deliveryId);
+		ApiResponse response = deliveryService.addDeliveryPrice(price, deliveryId);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 	
 	@PutMapping("/{id}/assign")
 	public ResponseEntity<ApiResponse> assignRiderToDelivery(@RequestParam Long rider, @PathVariable("id") Long deliveryId) {
-		var response = deliveryService.assignDeliveryToRider(rider, deliveryId);
+		ApiResponse response = deliveryService.assignDeliveryToRider(rider, deliveryId);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 }

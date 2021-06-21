@@ -1,5 +1,6 @@
 package com.arktech.service;
 
+
 import org.springframework.stereotype.Service;
 
 import com.arktech.Repository.DeliveryDetailRepository;
@@ -17,7 +18,7 @@ public class DeliveryDetailService {
 
 	public ApiResponse getDetails(Long deliveryId) {
 		try {
-			var details = deliveryDetailRepository
+			DeliveryDetail details = deliveryDetailRepository
 					.findByDelivery_id(deliveryId)
 					.orElseThrow(() -> new AppException("Delivery not found with ID: " + deliveryId));
 			
